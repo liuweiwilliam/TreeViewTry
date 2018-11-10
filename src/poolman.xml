@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<poolman>  
+    <management-mode>local</management-mode>  
+    <datasource>  
+        <dbname>log</dbname>  
+        <jndiName>log</jndiName>
+        <driver>com.mysql.jdbc.Driver</driver>  
+        <url>jdbc:mysql://118.178.180.169:3306/dictree</url>  
+        <username>root</username>  
+        <password>12345</password>  
+        <minimumSize>5</minimumSize>  
+        <maximumSize>10</maximumSize>
+        <connectionTimeout>30</connectionTimeout>
+        <logFile>System.out</logFile>
+        <validationQuery>SELECT userid FROM logs</validationQuery>
+    </datasource>
+</poolman>

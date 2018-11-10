@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC  
+                            "-//Hibernate/Hibernate Mapping DTD 3.0//EN"  
+                            "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >  
+
+<hibernate-mapping package="com.xtl.dictree.pojo">
+	<class name="XtlFileInfo" table="fileinfo">
+		<id name="id" column="id" type="string"></id>
+		
+														<property name="uid" type="string">
+			    <column name="uid" length="255"/>
+				</property>
+
+														<property name="fname" type="string">
+			    <column name="fname" length="255"/>
+				</property>
+
+														<property name="ftype" type="string">
+			    <column name="ftype" length="255"/>
+				</property>
+
+														<property name="savepath" type="text">
+			    <column name="savepath" length="1000"/>
+				</property>
+
+														<property name="urlpath" type="text">
+			    <column name="urlpath" length="1000"/>
+				</property>
+
+														<property name="create_time" type="string">
+			    <column name="create_time" length="20"/>
+				</property>
+
+														<property name="hdef1" type="text">
+			    <column name="hdef1" length="500"/>
+				</property>
+
+														<property name="hdef2" type="text">
+			    <column name="hdef2" length="500"/>
+				</property>
+
+														<property name="hdef3" type="text">
+			    <column name="hdef3" length="500"/>
+				</property>
+
+														<property name="hdef4" type="text">
+			    <column name="hdef4" length="500"/>
+				</property>
+
+														<property name="hdef5" type="text">
+			    <column name="hdef5" length="500"/>
+				</property>
+
+														<property name="hdef6" type="text">
+			    <column name="hdef6" length="500"/>
+				</property>
+
+														<property name="hdef7" type="text">
+			    <column name="hdef7" length="500"/>
+				</property>
+
+														<property name="hdef8" type="text">
+			    <column name="hdef8" length="500"/>
+				</property>
+
+														<property name="hdef9" type="text">
+			    <column name="hdef9" length="500"/>
+				</property>
+
+														<property name="hdef10" type="text">
+			    <column name="hdef10" length="500"/>
+				</property>
+
+														<property name="dr" type="string">
+			    <column name="dr" length="1"/>
+				</property>
+
+	</class>
+</hibernate-mapping>

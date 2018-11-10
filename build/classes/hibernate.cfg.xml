@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC  
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"  
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+	    <!-- c3p0配置 -->
+	    <property name="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</property>
+	    <property name="hibernate.c3p0.max_size">30</property>
+	    <property name="hibernate.c3p0.min_size">5</property>
+	    <property name="hibernate.c3p0.timeout">60</property>
+	    
+		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="connection.url">jdbc:mysql://118.178.180.169:3306/dictree?autoReconnect=true</property>
+		<property name="connection.username">root</property>
+		<property name="connection.password">12345</property>
+		<property name="connection.useUnicode">true</property>
+		<property name="connection.characterEncoding">UTF-8</property>
+		
+		<property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="show_sql">true</property>
+		
+		<property name="hbm2ddl.auto">update</property>
+     	<!-- 1.0.2版本业务的所有pojo -->
+     	
+     	<mapping resource="com/xtl/dictree/pojo/XtlFileInfo.hbm.xml"/>
+     	<mapping resource="com/xtl/dictree/pojo/XtlFileGroup.hbm.xml"/>
+     	<mapping resource="com/xtl/dictree/pojo/XtlDictionaryTree.hbm.xml"/>
+     	<mapping resource="com/xtl/dictree/pojo/XtlID.hbm.xml"/>
+		
+	</session-factory>
+</hibernate-configuration>

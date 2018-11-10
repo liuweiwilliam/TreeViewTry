@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+	<TITLE> ZTREE DEMO - Simple Data</TITLE>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" href="css/zTreeStyle/demo.css" type="text/css">
+	<link rel="stylesheet" href="css/zTreeStyle/zTreeStyle.css" type="text/css">
+	<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css">
+	<link rel="stylesheet" href="css/base.css" type="text/css">
+	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery.ztree.all.js"></script>
+	<style type="text/css">
+		.img-block span { 
+			display:block; 
+			width:200px; 
+			overflow: hidden; 
+			white-space: nowrap; 
+			text-overflow: ellipsis; 
+		}
+		
+		.img-block{
+			background-color: #D0D0D0;
+		}
+	</style>
+	<SCRIPT type="text/javascript">
+		
+		var setting = {
+			data: {
+				simpleData: {
+					enable: true
+				},
+				keep: {
+					parent:true,
+					leaf:true
+				}
+			},
+			view: {
+				selectedMulti: false
+			},
+			edit: {
+				enable: true,
+				showRemoveBtn: true,
+				showRenameBtn: true
+			},
+			callback: {
+				beforeDrag: beforeDrag,
+				beforeDrop: beforeDrop,
+				beforeRemove: beforeRemove,
+				beforeRename: beforeRename,
+				onRemove: onRemove,
+				onClick: onClick
+			}
+		};
+
+		var zNodes =[
+			{ id:1, pId:0, name:"父节点1 - 展开", open:true},
+			{ id:11, pId:1, name:"父节点11 - 折叠"},
+			{ id:111, pId:11, name:"叶子节点111"},
+			{ id:112, pId:11, name:"叶子节点112"},
+			{ id:113, pId:11, name:"叶子节点113"},
+			{ id:114, pId:11, name:"叶子节点114"},
+			{ id:12, pId:1, name:"父节点12 - 折叠"},
+			{ id:121, pId:12, name:"叶子节点121"},
+			{ id:122, pId:12, name:"叶子节点122"},
+			{ id:123, pId:12, name:"叶子节点123"},
+			{ id:124, pId:12, name:"叶子节点124"},
+			{ id:13, pId:1, name:"父节点13 - 没有子节点", isParent:true},
+			{ id:2, pId:0, name:"父节点2 - 折叠"},
+			{ id:21, pId:2, name:"父节点21 - 展开", open:true},
+			{ id:211, pId:21, name:"叶子节点211"},
+			{ id:212, pId:21, name:"叶子节点212"},
+			{ id:213, pId:21, name:"叶子节点213"},
+			{ id:214, pId:21, name:"叶子节点214"},
+			{ id:22, pId:2, name:"父节点22 - 折叠"},
+			{ id:221, pId:22, name:"叶子节点221"},
+			{ id:222, pId:22, name:"叶子节点222"},
+			{ id:223, pId:22, name:"叶子节点223"},
+			{ id:224, pId:22, name:"叶子节点224"},
+			{ id:23, pId:2, name:"父节点23 - 折叠"},
+			{ id:231, pId:23, name:"叶子节点231"},
+			{ id:232, pId:23, name:"叶子节点232"},
+			{ id:233, pId:23, name:"叶子节点233"},
+			{ id:234, pId:23, name:"叶子节点234"},
+			{ id:3, pId:0, name:"父节点4 - 没有子节点", isParent:true}
+		];
+
+		var log, className = "dark";
+		function beforeDrag(treeId, treeNodes) {
+			for (var i=0,l=treeNodes.length; i<l; i++) {
+				if (treeNodes[i].drag === false) {
+					return false;
+				}
+			}
+			return true;
+		}
+		function beforeDrop(treeId, treeNodes, targetNode, moveType) {
+			return targetNode ? targetNode.drop !== false : true;
+		}
+		function beforeRemove(treeId, treeNode) {
+			className = (className === "dark" ? "":"dark");
+			showLog("[ "+getTime()+" beforeRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
+			return confirm("确认删除 -- " + treeNode.name + " 吗？");
+		}
+		function onRemove(e, treeId, treeNode) {
+			showLog("[ "+getTime()+" onRemove ]&nbsp;&nbsp;&nbsp;&nbsp; " + treeNode.name);
+		}
+		function beforeRename(treeId, treeNode, newName) {
+			if (newName.length == 0) {
+				alert("节点名称不能为空.");
+				var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+				setTimeout(function(){zTree.editName(treeNode)}, 10);
+				return false;
+			}
+			return true;
+		}
+		function showLog(str) {
+			if (!log) log = $("#log");
+			log.append("<li class='"+className+"'>"+str+"</li>");
+			if(log.children("li").length > 8) {
+				log.get(0).removeChild(log.children("li")[0]);
+			}
+		}
+		
+		function onClick(event, treeId, treeNode, clickFlag) {
+			console.log(treeNode);
+			
+			var id = treeNode.id;
+			$.ajax({
+	  			type:"GET",
+	  			url:"getFiles.action?id=" + id,
+	  			//data:"subStr=" + encodeURIComponent(subStr),
+	  			dataType:"json",
+	  			beforeSend:function(){
+	  				showMask($("body"), "获取数据中...");
+	  				
+	  			},
+	  			success:function(data){
+	  				hideMask();
+	  			},
+	  			error:function(XHR){
+	  				hideMask();
+	  				console.log(XHR.status);
+	  			}
+	  		});
+		}
+		
+		function getNowFormatDate() {
+		    var date = new Date();
+		    var seperator1 = "-";
+		    var seperator2 = ":";
+		    var month = date.getMonth() + 1;
+		    var strDate = date.getDate();
+		    if (month >= 1 && month <= 9) {
+		        month = "0" + month;
+		    }
+		    if (strDate >= 0 && strDate <= 9) {
+		        strDate = "0" + strDate;
+		    }
+		    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+		            + " " + date.getHours() + seperator2 + date.getMinutes()
+		            + seperator2 + date.getSeconds();
+		    return currentdate;
+		}
+		
+		function getTime() {
+			var now= new Date(),
+			h=now.getHours(),
+			m=now.getMinutes(),
+			s=now.getSeconds(),
+			ms=now.getMilliseconds();
+			return (h+":"+m+":"+s+ " " +ms);
+		}
+
+		var newCount = 1;
+		function add(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			isParent = e.data.isParent,
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (treeNode) {
+				treeNode = zTree.addNodes(treeNode, {id:(100 + newCount), pId:treeNode.id, isParent:isParent, name:"new node" + (newCount++)});
+			} else {
+				treeNode = zTree.addNodes(null, {id:(100 + newCount), pId:0, isParent:isParent, name:"new node" + (newCount++)});
+			}
+			if (treeNode) {
+				zTree.editName(treeNode[0]);
+			} else {
+				alert("叶子节点被锁定，无法增加子节点");
+			}
+		};
+		function edit() {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (nodes.length == 0) {
+				alert("请先选择一个节点");
+				return;
+			}
+			zTree.editName(treeNode);
+		};
+		function remove(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (nodes.length == 0) {
+				alert("请先选择一个节点");
+				return;
+			}
+			var callbackFlag = $("#callbackTrigger").attr("checked");
+			zTree.removeNode(treeNode, callbackFlag);
+		};
+		function clearChildren(e) {
+			var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+			nodes = zTree.getSelectedNodes(),
+			treeNode = nodes[0];
+			if (nodes.length == 0 || !nodes[0].isParent) {
+				alert("请先选择一个父节点");
+				return;
+			}
+			zTree.removeChildNodes(treeNode);
+		};
+		
+		$(document).ready(function(){
+			$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+			$("#addParent").bind("click", {isParent:true}, add);
+			$("#addLeaf").bind("click", {isParent:false}, add);
+			$("#edit").bind("click", edit);
+			$("#remove").bind("click", remove);
+			$("#clearChildren").bind("click", clearChildren);
+		});
+		
+	</SCRIPT>
+ </HEAD>
+
+<BODY>
+<h1>最简单的树 -- 简单 JSON 数据</h1>
+<h6>[ 文件路径: core/simpleData.html ]</h6>
+<div class="content_wrap">
+	<div class="zTreeDemoBackground left">
+		<a id="addParent" href="#" title="增加父节点" onclick="return false;">添加文件夹</a>
+		<a id="addLeaf" href="#" title="增加叶子节点" onclick="return false;">添加文件 </a>
+		<!-- <a id="edit" href="#" title="编辑名称" onclick="return false;">编辑名称</a>
+		<a id="remove" href="#" title="删除节点" onclick="return false;">删除节点</a>
+		<a id="clearChildren" href="#" title="清空子节点" onclick="return false;">清空子节点</a> -->
+		<ul id="treeDemo" class="ztree"></ul>
+		
+	</div>
+	<div class="right">
+		<i class="fa fa-plus" style="" id="ajaxFileUpload" onSuccess="uploadSuccess" onFailed="uploadFailed">上传图片</i>
+		<div id="files" style="margin-top: 10px;width:100%;">
+			<div id="file-left" style="width:45%;float:left;"></div>
+			<div id="file-right" style="width:45%;float:left;margin-left:10px;"></div>
+		</div>
+	</div>
+</div>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/bootbox.js"></script>
+<script src="js/ajaxfileupload.js"></script>
+<script src="js/base.js"></script>
+<script type="text/javascript">
+	var fileIds = new Array();
+	var height_left = 0;
+	var height_right = 0;
+	
+	function uploadSuccess(rslt){
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+		nodes = zTree.getSelectedNodes();
+		console.log(nodes);
+		appendImg(rslt);
+	}
+	
+	function appendImg(img_info){
+		var sel;
+		if(height_right<height_left){
+			sel = $("#file-right");
+			$(sel).append('<div class="img-block" style="width:100%;margin-top:2px;">'
+					+		'<span title="'+ img_info.filename +'">' + img_info.filename + '</span>'
+					+		'<img src="' + img_info.path +  '" onclick="img_view(this);" style=\"width:100%;\"/>'
+					+   	'<i class="fa fa-times-circle fa-lg" style="background:#fff;position:absolute;right:-0.2rem;top:-0.1rem;border-radius:100%;" onclick="delPic(this)"></i>'
+					+	'</div>');
+			height_right += img_info.height;
+		}else{
+			sel = $("#file-left");
+			$(sel).append('<div class="img-block" style="width:100%;margin-top:2px;margin-left:2px;">'
+					+		'<span title="'+ img_info.filename +'">' + img_info.filename + '</span>'
+					+		'<img src="' + img_info.path +  '" onclick="img_view(this);" style=\"width:100%;\"/>'
+					+   	'<i class="fa fa-times-circle fa-lg" style="background:#fff;position:absolute;right:-0.2rem;top:-0.1rem;border-radius:100%;" onclick="delPic(this)"></i>'
+					+	'</div>');
+			height_left += img_info.height;
+		}
+	}
+	
+	function uploadFailed(){
+		
+	}
+</script>
+</BODY>
+</HTML>
